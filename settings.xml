@@ -63,7 +63,7 @@
     </repository>
     <repository>
       <id>jakarta</id>
-      <name>Jakarta Staging Repository</name>
+      <name>Jakarta Releases Repository</name>
       <url>https://jakarta.oss.sonatype.org/content/repositories/releases/</url>
       <layout>default</layout>
       <snapshots>
