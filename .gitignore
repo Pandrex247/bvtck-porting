@@ -1,7 +1,7 @@
 .settings/
 target/
 *-results.tar.gz
-/payara5/
+/payara6/
 /dist/
 /bundles/
 /bv-tck-glassfish-porting
