@@ -114,7 +114,7 @@
                         <arg value="-Classpath"/>
                         <arg value="${java.home}/${java.classes.for.sig.ext}${pathsep}${glassfish.home}/modules/jersey-bean-validator.jar${aix.jars}"/>
                         <arg value="-Package"/>
-                        <arg value="javax.validation"/>
+                        <arg value="jakarta.validation"/>
                         <arg value="-FileName"/>
                         <arg value="${sig.file}"/>
                         <arg value="-Static"/>
@@ -481,7 +481,7 @@
                         <arg value="-Classpath"/>
                         <arg value="${java.home}/${java.classes.for.sig.ext}:${glassfish.home}/modules/jersey-bean-validator.jar"/>
                         <arg value="-Package"/>
-                        <arg value="javax.validation"/>
+                        <arg value="jakarta.validation"/>
                         <arg value="-FileName"/>
                         <arg value="${porting.home}/validation-api-java7.sig"/>
                         <arg value="-Static"/>

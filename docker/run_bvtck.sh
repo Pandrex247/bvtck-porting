@@ -56,11 +56,11 @@ mkdir -p ${REPORT}/beanvalidation-$VER-sig
 mkdir -p ${REPORT}/beanvalidation-$VER
 
 #Edit Glassfish Security policy
-cat ${WORKSPACE}/docker/BV.policy >> ${WORKSPACE}/payara5/glassfish/domains/domain1/config/server.policy
+cat ${WORKSPACE}/docker/BV.policy >> ${WORKSPACE}/payara6/glassfish/domains/domain1/config/server.policy
 
 #Edit test properties
 sed -i "s#porting.home=.*#porting.home=${TS_HOME}#g" ${TS_HOME}/build.properties
-sed -i "s#glassfish.home=.*#glassfish.home=${WORKSPACE}/payara5/glassfish#g" ${TS_HOME}/build.properties
+sed -i "s#glassfish.home=.*#glassfish.home=${WORKSPACE}/payara6/glassfish#g" ${TS_HOME}/build.properties
 sed -i "s#report.dir=.*#report.dir=${REPORT}#g" ${TS_HOME}/build.properties
 sed -i "s#admin.user=.*#admin.user=admin#g" ${TS_HOME}/build.properties
 sed -i "s#jersey-bean-validator.*#jakarta.validation-api.jar\${aix.jars}\"/>#g" ${TS_HOME}/build.xml
