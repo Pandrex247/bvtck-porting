@@ -32,7 +32,7 @@
  
     <properties>
         <tck.suite.file>${project.build.directory}/dependency/beanvalidation-tck-tests-suite.xml</tck.suite.file>
-        <arquillian.version>1.7.0.Alpha2</arquillian.version>
+        <arquillian.version>1.7.0.Alpha9</arquillian.version>
         <jbossas.version>7.2.0.Final</jbossas.version>
         <jbossTargetDir>${project.build.directory}/jboss-as-${jbossas.version}</jbossTargetDir>
         <validation.provider>org.hibernate.validator.HibernateValidator</validation.provider>
@@ -63,12 +63,12 @@
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>9.0.0</version>
+            <version>9.1.0-RC1</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator-cdi</artifactId>
-            <version>7.0.0.Final</version>
+            <version>7.0.1.Final</version>
         </dependency>
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>7.0.0.Final</version>
+            <version>7.0.1.Final</version>
              <exclusions>
                 <exclusion>
                     <groupId>jakarta.validation</groupId>
@@ -135,12 +135,12 @@
         <dependency>
             <groupId>jakarta.interceptor</groupId>
             <artifactId>jakarta.interceptor-api</artifactId>
-            <version>1.2.4</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.ejb</groupId>
             <artifactId>jakarta.ejb-api</artifactId>
-            <version>3.2.5</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -166,7 +166,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet</artifactId>
+            <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
             <version>${arquillian.version}</version>
             <scope>test</scope>
         </dependency>
@@ -350,7 +350,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <arquillian.protocol>Servlet 3.0</arquillian.protocol>
+                <arquillian.protocol>Servlet 5.0</arquillian.protocol>
             </properties>
             <dependencies>
                 <dependency>
