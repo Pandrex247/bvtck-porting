@@ -18,14 +18,14 @@
 
 -->
 
-<project name="BV 2.0 TCK Glassfish Porting" default="dist" basedir=".">
+<project name="BV 3.0 TCK Glassfish Porting" default="dist" basedir=".">
 
 	<property environment="env" />
 	<property file="${basedir}/build.properties" />
 
 	<property name="maven.executable" value="${env.MAVEN_HOME}/bin/mvn" />
         <property name="pathsep" value="${path.separator}"/>
-        <property name="tck.version" value="2.0.0"/>
+        <property name="tck.version" value="3.0.0"/>
 	<property name="src" value="${basedir}/src" />
 	<property name="classes" value="${basedir}/classes" />
 	<property name="dist" value="${basedir}/dist" />
@@ -89,7 +89,7 @@
         
 	<target name="run.all.tests" depends="sigtest, test"/>
 
-        <target name="test" depends="config.v4, copy.settingsxml, filter.arquillian.xml">
+        <target name="test" depends="config.v4, filter.arquillian.xml">
             <if>
                 <or>
                  <os family="windows"/>
@@ -457,22 +457,26 @@
 	</target>
         
 	<presetdef name="mvn.test">
-		<exec executable="${maven.executable}">
-			<arg value="-s" />
+                <exec executable="${maven.executable}">
+                    <arg value="--global-settings" />
+                    <arg value="${porting.home}/settings.xml"/>
+                    <arg value="-s" />
 
-			<arg value="-U" />
-            <arg value="clean" />
-            <arg value="test" />
-		</exec>
+                    <arg value="-U" />
+                    <arg value="clean" />
+                    <arg value="test" />
+                </exec>
 	</presetdef>
         
         <presetdef name="mvn.test.win">
-		<exec executable="cmd">
-			<arg value="/c"/>
+                    <exec executable="cmd">
+                        <arg value="/c"/>
                         <arg value="${maven.executable}.bat"/>
+                        <arg value="--global-settings" />
+                        <arg value="${porting.home}/settings.xml"/>
                         <arg value="-U" />
                         <arg value="test" />
-		</exec>
+                    </exec>
 	</presetdef>
         
         <!--<target name="-record.sigtest">

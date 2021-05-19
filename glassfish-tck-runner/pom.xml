@@ -44,6 +44,7 @@
         <cdi-api.version>3.0.0</cdi-api.version>
         <jakarta.el.version>4.0.0</jakarta.el.version>
         <jboss.test.audit.version>1.1.4.Final</jboss.test.audit.version>
+        <arquillian.container.glassfish6>1.0.0.Alpha1</arquillian.container.glassfish6>
     </properties>
  
     <dependencyManagement>
@@ -63,7 +64,7 @@
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>9.1.0-RC1</version>
+            <version>9.0.0-RC3</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
@@ -221,6 +222,11 @@
           <version>2.21.0</version>
           <type>maven-plugin</type>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-glassfish-managed-6</artifactId>
+            <version>${arquillian.container.glassfish6}</version>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -317,9 +323,8 @@
                             <name>validation.provider</name>
                             <value>${validation.provider}</value>
                         </property>
+                        <arquillian.launch>remote</arquillian.launch>
                     </systemProperties>
-                    <parallel>methods</parallel>
-                    <threadCount>4</threadCount>
                 </configuration>
             </plugin>
             <plugin>
@@ -345,29 +350,49 @@
  
     <profiles>
          <profile>
+            <id>glassish-remote</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-glassfish-remote-6</artifactId>
+                    <version>${arquillian.container.glassfish6}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <!-- Run the tests -->
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <argLine>-Xmx1024m</argLine>
+                            <forkMode>once</forkMode>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>${tck.suite.file}</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <systemPropertyVariables>
+                                <validation.provider>${validation.provider}</validation.provider>
+                                <arquillian.launch>incontainer</arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>glassfish-managed</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <arquillian.protocol>Servlet 5.0</arquillian.protocol>
-            </properties>
             <dependencies>
                 <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <version>4.12</version>
-                    <scope>test</scope>
-                </dependency>
- 
-                <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-glassfish-managed-3.1</artifactId>
-                    <version>1.0.2</version>
+                    <artifactId>arquillian-glassfish-managed-6</artifactId>
+                    <version>${arquillian.container.glassfish6}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
- 
             <build>
                 <plugins>
                     <plugin>
@@ -375,17 +400,11 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.22.1</version>
                         <configuration>
-                            <argLine>-Xmx1024m -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dvalidation.provider=${validation.provider}</argLine>
+                            <argLine>-Xmx1024m</argLine>
                             <forkMode>once</forkMode>
                             <suiteXmlFiles>
                                 <suiteXmlFile>${tck.suite.file}</suiteXmlFile>
                             </suiteXmlFiles>
-                            <properties>
-                                <property>
-                                    <name>usedefaultlisteners</name>
-                                    <value>false</value>
-                                </property>
-                            </properties>
                             <systemPropertyVariables>
                                 <arquillian.launch>glassfish</arquillian.launch>
                                 <validation.provider>${validation.provider}</validation.provider>
