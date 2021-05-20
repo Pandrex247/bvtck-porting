@@ -34,6 +34,15 @@
       </snapshots>
     </repository>
     <repository>
+      <id>jboss</id>
+      <name>Central Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
       <url>http://repository.jboss.org/nexus/content/groups/public/</url>
