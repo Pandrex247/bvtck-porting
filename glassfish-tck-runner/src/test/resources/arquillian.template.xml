@@ -22,7 +22,7 @@
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
     <!-- Need to set the default protocol and use resource filtering, because of https://issues.jboss.org/browse/ARQ-579 -->
-    <defaultProtocol type="${arquillian.protocol}"/>
+    <defaultProtocol type="Servlet 5.0"/>
 
     <engine>
         <property name="maxTestClassesBeforeRestart">@maxClassesRestart@</property>
