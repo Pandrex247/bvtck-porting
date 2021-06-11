@@ -37,7 +37,7 @@
             <property name="adminPort">@adminPort@</property>
             <property name="adminUser">@adminUser@</property>
             <property name="adminPassword">@adminPassword@</property>
-            <property name="debug">true</property>
+            <property name="debug">false</property>
             <property name="validation.provider">${validation.provider}</property>
             <!--<property name="allowConnectingToRunningServer">true</property>-->
         </configuration>
