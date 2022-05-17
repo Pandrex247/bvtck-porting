@@ -32,19 +32,20 @@
  
     <properties>
         <tck.suite.file>${project.build.directory}/dependency/beanvalidation-tck-tests-suite.xml</tck.suite.file>
-        <arquillian.version>1.7.0.Alpha9</arquillian.version>
+        <arquillian.version>1.7.0.Alpha10</arquillian.version>
         <jbossas.version>7.2.0.Final</jbossas.version>
         <jbossTargetDir>${project.build.directory}/jboss-as-${jbossas.version}</jbossTargetDir>
         <validation.provider>org.hibernate.validator.HibernateValidator</validation.provider>
         <remote.debug/>
-        <validation.api.version>3.0.0</validation.api.version>
+        <validation.api.version>3.0.1</validation.api.version>
         <testng.version>6.14.3</testng.version>
         <assertj-core.version>3.7.0</assertj-core.version>
         <shrinkwrap.descriptors.version>2.0.0-alpha-10</shrinkwrap.descriptors.version>
-        <cdi-api.version>3.0.0</cdi-api.version>
-        <jakarta.el.version>4.0.0</jakarta.el.version>
+        <cdi-api.version>4.0.0</cdi-api.version>
+        <jakarta.el.version>5.0.0</jakarta.el.version>
         <jboss.test.audit.version>1.1.4.Final</jboss.test.audit.version>
         <arquillian.container.glassfish6>1.0.0.Alpha1</arquillian.container.glassfish6>
+        <version.arquillian_core>1.7.0.Final-SNAPSHOT</version.arquillian_core>
     </properties>
  
     <dependencyManagement>
@@ -64,13 +65,14 @@
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>9.1.0</version>
+            <version>10.0.0-RC1</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator-cdi</artifactId>
-            <version>7.0.1.Final</version>
+            <version>7.0.4.Final</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
@@ -82,10 +84,11 @@
             <artifactId>jakarta.validation-api</artifactId>
             <version>${validation.api.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>7.0.1.Final</version>
+            <version>7.0.4.Final</version>
              <exclusions>
                 <exclusion>
                     <groupId>jakarta.validation</groupId>
@@ -133,10 +136,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--
         <dependency>
             <groupId>jakarta.interceptor</groupId>
             <artifactId>jakarta.interceptor-api</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0-RC3</version>
         </dependency>
         <dependency>
             <groupId>jakarta.ejb</groupId>
@@ -153,6 +157,7 @@
             <artifactId>jakarta.el-api</artifactId>
             <version>${jakarta.el.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>beanvalidation-tck-tests</artifactId>
@@ -194,12 +199,12 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.11.0</version>
+            <version>[2.13.2,)</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.11.0</version>
+            <version>[2.13.2,)</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -223,9 +228,34 @@
           <type>maven-plugin</type>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-glassfish-managed-6</artifactId>
-            <version>${arquillian.container.glassfish6}</version>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-locator</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
+            <version>${version.arquillian_core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-ejb-jakarta</artifactId>
+            <version>${version.arquillian_core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-resource-jakarta</artifactId>
+            <version>${version.arquillian_core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testenricher</groupId>
+            <artifactId>arquillian-testenricher-initialcontext</artifactId>
+            <version>${version.arquillian_core}</version>
         </dependency>
     </dependencies>
 
@@ -257,6 +287,12 @@
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
         </snapshots>
+        </repository>
+        <!-- TODO: Temporarily enable snapshot repository -->
+        <!-- This can be removed once an official releases available -->
+        <repository>
+            <id>jakarta-snapshots</id>
+            <url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
         </repository>
     </repositories>    
  
@@ -354,9 +390,26 @@
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-glassfish-remote-6</artifactId>
-                    <version>${arquillian.container.glassfish6}</version>
-                    <scope>test</scope>
+                    <artifactId>arquillian-glassfish-managed-jakarta</artifactId>
+                    <version>1.0.0.Final-SNAPSHOT</version>
+                    <exclusions>
+                        <exclusion>
+                            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>arquillian-testenricher-ejb-jakarta</artifactId>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>arquillian-testenricher-resource-jakarta</artifactId>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>arquillian-testenricher-initialcontext</artifactId>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
             </dependencies>
             <build>
@@ -388,9 +441,26 @@
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-glassfish-managed-6</artifactId>
-                    <version>${arquillian.container.glassfish6}</version>
-                    <scope>test</scope>
+                    <artifactId>arquillian-glassfish-managed-jakarta</artifactId>
+                    <version>1.0.0.Final-SNAPSHOT</version>
+                    <exclusions>
+                        <exclusion>
+                            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>arquillian-testenricher-ejb-jakarta</artifactId>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>arquillian-testenricher-resource-jakarta</artifactId>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>arquillian-testenricher-initialcontext</artifactId>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
             </dependencies>
             <build>
