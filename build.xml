@@ -24,30 +24,20 @@
 	<property file="${basedir}/build.properties" />
 
 	<property name="maven.executable" value="${env.MAVEN_HOME}/bin/mvn" />
-        <property name="pathsep" value="${path.separator}"/>
-        <property name="tck.version" value="3.0.1"/>
+	<property name="pathsep" value="${path.separator}"/>
+	<property name="portingkit.version" value="3.0.2"/>
 	<property name="src" value="${basedir}/src" />
 	<property name="classes" value="${basedir}/classes" />
 	<property name="dist" value="${basedir}/dist" />
 	<property name="lib" value="${basedir}/lib" />
-	<property name="dist.file" value="bv-tck-payara-porting" />
-        <property name="admin.port" value="4848"/>
-        <property name="admin.host" value="localhost"/>
-        <!-- number of seconds to wait for the v4 admin port to be available -->
-	<property name="wait.for.v4" value="90"/> 
+	<property name="dist.file" value="bv-tck-payara-porting"/>
+	<property name="admin.port" value="4848"/>
+	<property name="admin.host" value="localhost"/>
+	<!-- number of seconds to wait for the v4 admin port to be available -->
+	<property name="wait.for.v4" value="90"/>
+	<property name="sig.file" value="${porting.home}/validation-api.sig" />
         
         <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${lib}/ant-contrib.jar" />
-        
-        <!-- Set the sig file to use based on the Java SE Version in use -->
-	<if>
-                <equals arg1="${java.specification.version}" arg2="1.7"/>
-                <then>
-                        <property name="sig.file" value="${porting.home}/validation-api-java7.sig" />
-                </then>
-                <else>
-                    <property name="sig.file" value="${porting.home}/validation-api-java8.sig" />
-                </else>
-        </if>
         
         <condition property="java.classes.for.sig.ext" value="bundle/Classes/classes.jar"
                                    else="lib/rt.jar">    
@@ -169,7 +159,7 @@
             <tstamp>
                     <format property="time.stamp.bundle.string" pattern="dd-MMM-yyyy" locale="en" />
             </tstamp>
-            <zip destfile="${dist}/${dist.file}-${tck.version}_${time.stamp.bundle.string}.zip">
+            <zip destfile="${dist}/${dist.file}-${portingkit.version}_${time.stamp.bundle.string}.zip">
                     <zipfileset dir="${basedir}" includes="*.xml, build.properties, classes/**,
                         lib/*.jar, glassfish-tck-runner/**, readme.txt, *.sig, password.template"
                         excludes="lib/sigtestdev.jar, glassfish-tck-runner/target/**" prefix="bv-tck-glassfish-porting" />

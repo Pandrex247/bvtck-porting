@@ -35,17 +35,17 @@ wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O  ${WORKSPACE}/latest-glas
 unzip -q -o ${WORKSPACE}/latest-glassfish.zip -d ${WORKSPACE}
 
 
-rm -fr arquillian-core-jakartaee9 
-wget https://github.com/jakartaredhat/arquillian-core/archive/jakartaee9.zip -O arquillian-core.zip
-unzip -q arquillian-core.zip
-cd arquillian-core-jakartaee9
-mvn --global-settings "${TS_HOME}/settings.xml" install
+rm -fr arquillian-core-master
+wget https://github.com/arquillian/arquillian-core/archive/master.zip -O arquillian-core.zip
+unzip -q -o arquillian-core.zip
+cd arquillian-core-master
+mvn --global-settings "${TS_HOME}/settings.xml" clean install -DskipTests
 cd $WORKSPACE
 
-# Build 1.0.0-SNAPSHOT release of arquillian-container-glassfish6
+# Build 1.0.0-SNAPSHOT release of arquillian-container-glassfish7
 rm -fr arquillian-container-glassfish6-master 
-wget https://github.com/arquillian/arquillian-container-glassfish6/archive/master.zip -O arquillian-container-glassfish6.zip
-unzip -q arquillian-container-glassfish6.zip
+wget https://github.com/arquillian/arquillian-container-glassfish6/archive/master.zip -O arquillian-container-glassfish.zip
+unzip -q -o arquillian-container-glassfish.zip
 cd arquillian-container-glassfish6-master
 mvn --global-settings "${TS_HOME}/settings.xml" install
 cd $WORKSPACE
@@ -68,10 +68,10 @@ unzip -o ${WORKSPACE}/latest-beanvalidation-tck-dist.zip -d ${WORKSPACE}/
 which ant
 ant -version
 
-if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
-  export JAVA_HOME=${JDK11_HOME}
-  export PATH=$JAVA_HOME/bin:$PATH
+if [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]];then
+  export JAVA_HOME=${JDK17_HOME}
 fi
+export PATH=$JAVA_HOME/bin:$PATH
 
 which java
 java -version
