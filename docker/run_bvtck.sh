@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 #
-# Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
-# Copyright (c) 2019, 2021 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2018, 2022 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2019, 2022 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,29 +30,13 @@ export TS_HOME=${WORKSPACE}/bv-tck-glassfish-porting
 GLASSFISH_TOP_DIR=payara6
 
 #Install Glassfish
-echo "Download and install GlassFish..."
-wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O  ${WORKSPACE}/latest-glassfish.zip
-unzip -q -o ${WORKSPACE}/latest-glassfish.zip -d ${WORKSPACE}
-
-
-rm -fr arquillian-core-master
-wget https://github.com/arquillian/arquillian-core/archive/master.zip -O arquillian-core.zip
-unzip -q -o arquillian-core.zip
-cd arquillian-core-master
-mvn --global-settings "${TS_HOME}/settings.xml" clean install -DskipTests
-cd $WORKSPACE
-
-# Build 1.0.0-SNAPSHOT release of arquillian-container-glassfish7
-rm -fr arquillian-container-glassfish6-master 
-wget https://github.com/arquillian/arquillian-container-glassfish6/archive/master.zip -O arquillian-container-glassfish.zip
-unzip -q -o arquillian-container-glassfish.zip
-cd arquillian-container-glassfish6-master
-mvn --global-settings "${TS_HOME}/settings.xml" install
-cd $WORKSPACE
+echo "Download and install GlassFish ..."
+wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O ${WORKSPACE}/latest-glassfish.zip
+unzip -o ${WORKSPACE}/latest-glassfish.zip -d ${WORKSPACE}
 
 
 if [ -z "${BV_TCK_VERSION}" ]; then
-  BV_TCK_VERSION=3.0.0
+  BV_TCK_VERSION=3.0.1
 fi
 
 if [ -z "${BV_TCK_BUNDLE_URL}" ]; then
@@ -85,33 +69,32 @@ mkdir -p ${REPORT}/beanvalidation-$VER
 cat ${WORKSPACE}/docker/BV.policy >> ${WORKSPACE}/${GLASSFISH_TOP_DIR}/glassfish/domains/domain1/config/server.policy
 
 #Edit test properties
-sed -i "s#porting.home=.*#porting.home=${TS_HOME}#g" ${TS_HOME}/build.properties
-sed -i "s#glassfish.home=.*#glassfish.home=${WORKSPACE}/${GLASSFISH_TOP_DIR}/glassfish#g" ${TS_HOME}/build.properties
-sed -i "s#report.dir=.*#report.dir=${REPORT}#g" ${TS_HOME}/build.properties
-sed -i "s#admin.user=.*#admin.user=admin#g" ${TS_HOME}/build.properties
-sed -i "s#jersey-bean-validator.*#jakarta.validation-api.jar\${aix.jars}\"/>#g" ${TS_HOME}/build.xml
+sed -i.bak "s#porting.home=.*#porting.home=${TS_HOME}#g" ${TS_HOME}/build.properties
+sed -i.bak "s#glassfish.home=.*#glassfish.home=${WORKSPACE}/${GLASSFISH_TOP_DIR}/glassfish#g" ${TS_HOME}/build.properties
+sed -i.bak "s#report.dir=.*#report.dir=${REPORT}#g" ${TS_HOME}/build.properties
+sed -i.bak "s#admin.user=.*#admin.user=admin#g" ${TS_HOME}/build.properties
 
 GROUP_ID=jakarta.validation
 ARTIFACT_ID=beanvalidation-tck-tests 
 BEANVALIDATION_TCK_DIST=beanvalidation-tck-dist
 
 # Parent pom
-mvn --global-settings "${PORTING}/settings.xml" org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
+mvn --global-settings "${TS_HOME}/settings.xml" org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
 -Dfile=${WORKSPACE}/${BEANVALIDATION_TCK_DIST}-${BV_TCK_VERSION}/src/pom.xml \
 -DgroupId=${GROUP_ID} \
 -DartifactId=beanvalidation-tck-parent \
 -Dversion=${BV_TCK_VERSION} \
 -Dpackaging=pom
 
-mvn --global-settings "${PORTING}/settings.xml" install:install-file \
+mvn --global-settings "${TS_HOME}/settings.xml" org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
 -Dfile=${WORKSPACE}/${BEANVALIDATION_TCK_DIST}-${BV_TCK_VERSION}/artifacts/beanvalidation-tck-tests-${BV_TCK_VERSION}.jar \
 -DgroupId=${GROUP_ID} \
 -DartifactId=${ARTIFACT_ID} \
 -Dversion=${BV_TCK_VERSION} \
 -Dpackaging=jar
 
-mvn --global-settings "${PORTING}/settings.xml" install:install-file \
--Dfile=${WORKSPACE}/${BEANVALIDATION_TCK_DIST}-${BV_TCK_VERSION}/artifacts/beanvalidation-tck-tests-${BV_TCK_VERSION}-tck-tests.xml \
+mvn --global-settings "${TS_HOME}/settings.xml" org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
+-Dfile=${WORKSPACE}/${BEANVALIDATION_TCK_DIST}-${BV_TCK_VERSION}/artifacts/tck-tests.xml \
 -DgroupId=${GROUP_ID} \
 -DartifactId=${ARTIFACT_ID} \
 -Dversion=${BV_TCK_VERSION} \
@@ -128,7 +111,7 @@ mvn -version
 
 #List dependencies used for testing
 cd ${TS_HOME}/glassfish-tck-runner
-mvn --global-settings "${PORTING}/settings.xml" dependency:tree
+mvn --global-settings "${TS_HOME}/settings.xml" dependency:tree
 
 #Generate Reports
 echo "<pre>" > ${REPORT}/beanvalidation-$VER-sig/report.html
@@ -143,7 +126,7 @@ fi
 
 #Copy surefire reports to report directory
 mv ${REPORT}/beanvalidation-$VER/TEST-TestSuite.xml  ${REPORT}/beanvalidation-$VER/beanvalidation-$VER-junit-report.xml
-sed -i 's/name=\"TestSuite\"/name="beanvalidation-3.0"/g' ${REPORT}/beanvalidation-$VER/beanvalidation-$VER-junit-report.xml
+sed -i.bak 's/name=\"TestSuite\"/name="beanvalidation-3.0"/g' ${REPORT}/beanvalidation-$VER/beanvalidation-$VER-junit-report.xml
 
 # Create Junit formated file for sigtests
 echo '<?xml version="1.0" encoding="UTF-8" ?>' > $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
@@ -158,11 +141,11 @@ echo '</testsuite>' >> $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-j
 # Fill appropriate test counts
 if [ -f "$REPORT/beanvalidation-$VER-sig/report.html" ]; then
   if grep -q STATUS:Passed "$REPORT/beanvalidation-$VER-sig/report.html"; then
-    sed -i 's/tests=\"TOTAL\"/tests="1"/g' $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
-    sed -i 's/failures=\"FAILED\"/failures="0"/g' $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
+    sed -i.bak 's/tests=\"TOTAL\"/tests="1"/g' $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
+    sed -i.bak 's/failures=\"FAILED\"/failures="0"/g' $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
   else
-    sed -i 's/tests=\"TOTAL\"/tests="1"/g' $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
-    sed -i 's/failures=\"FAILED\"/failures="1"/g' $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
+    sed -i.bak 's/tests=\"TOTAL\"/tests="1"/g' $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
+    sed -i.bak 's/failures=\"FAILED\"/failures="1"/g' $REPORT/beanvalidation-$VER-sig/beanvalidation-$VER-sig-junit-report.xml
   fi
 fi
 

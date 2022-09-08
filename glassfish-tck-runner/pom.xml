@@ -17,19 +17,18 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
- 
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
         <version>1.0.6</version>
     </parent>
     <groupId>jakarta.validation</groupId>
-    <version>3.0.0</version>
     <artifactId>tck-runner</artifactId>
- 
+    <version>3.0.1</version>
+
     <name>Jakarta Bean Validation TCK Runner</name>
     <description>Aggregates dependencies and runs the Jakarta Bean Validation TCK</description>
- 
+
     <properties>
         <tck.suite.file>${project.build.directory}/dependency/beanvalidation-tck-tests-suite.xml</tck.suite.file>
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
@@ -41,36 +40,54 @@
         <testng.version>6.14.3</testng.version>
         <assertj-core.version>3.7.0</assertj-core.version>
         <shrinkwrap.descriptors.version>2.0.0-alpha-10</shrinkwrap.descriptors.version>
-        <cdi-api.version>4.0.0</cdi-api.version>
+        <cdi-api.version>4.0.1</cdi-api.version>
         <jakarta.el.version>5.0.0</jakarta.el.version>
-        <jboss.test.audit.version>1.1.4.Final</jboss.test.audit.version>
         <arquillian.container.glassfish6>1.0.0.Alpha1</arquillian.container.glassfish6>
-        <version.arquillian_core>1.7.0.Final-SNAPSHOT</version.arquillian_core>
+        <version.arquillian_core>1.7.0.Alpha10</version.arquillian_core>
     </properties>
- 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${arquillian.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+
+    <!-- TODO: Temporarily enable snapshot repository -->
+    <!-- This can be removed once an official releases available -->
+    <repositories>
+        <repository>
+            <id>jakarta-snapshots</id>
+            <url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+        </repository>
+    </repositories>
+
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.jboss.arquillian.test</groupId>
+            <artifactId>arquillian-test-spi</artifactId>
+            <version>${arquillian.version}</version>
+        </dependency>
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>10.0.0-RC1</version>
         </dependency>
         <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>beanvalidation-tck-tests</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator-cdi</artifactId>
             <version>7.0.4.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>7.0.4.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta.validation</groupId>
+                    <artifactId>validation-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--
         <dependency>
@@ -78,65 +95,11 @@
             <artifactId>jakarta.ws.rs-api</artifactId>
             <version>3.0.0</version>
         </dependency>
-
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>${validation.api.version}</version>
         </dependency>
-        -->
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>7.0.4.Final</version>
-             <exclusions>
-                <exclusion>
-                    <groupId>jakarta.validation</groupId>
-                    <artifactId>jakarta.validation-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.test-audit</groupId>
-            <artifactId>jboss-test-audit-api</artifactId>
-            <version>${jboss.test.audit.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.test-audit</groupId>
-            <artifactId>jboss-test-audit-impl</artifactId>
-            <version>${jboss.test.audit.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-            <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
-            <version>${shrinkwrap.descriptors.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>${cdi-api.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.el</groupId>
-                    <artifactId>jakarta.el-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jakarta.interceptor</groupId>
-                    <artifactId>jakarta.interceptor-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!--
         <dependency>
             <groupId>jakarta.interceptor</groupId>
             <artifactId>jakarta.interceptor-api</artifactId>
@@ -159,10 +122,34 @@
         </dependency>
         -->
         <dependency>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>beanvalidation-tck-tests</artifactId>
-            <version>3.0.0</version>
-            <scope>test</scope>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+            <version>${shrinkwrap.descriptors.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>${cdi-api.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jakarta.interceptor</groupId>
+                    <artifactId>jakarta.interceptor-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
@@ -172,7 +159,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
             <version>${arquillian.version}</version>
             <scope>test</scope>
         </dependency>
@@ -210,8 +197,8 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.25</version>
-       </dependency>
-       <dependency>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
             <version>2.1.5.Final</version>
@@ -222,10 +209,10 @@
             <version>2.0b6</version>
         </dependency>
         <dependency>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.21.0</version>
-          <type>maven-plugin</type>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.21.0</version>
+            <type>maven-plugin</type>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
@@ -238,64 +225,13 @@
             <version>3.0.3</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
-            <version>${version.arquillian_core}</version>
+            <groupId>org.omnifaces.arquillian</groupId>
+            <artifactId>arquillian-glassfish-server-managed</artifactId>
+            <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-ejb-jakarta</artifactId>
-            <version>${version.arquillian_core}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-resource-jakarta</artifactId>
-            <version>${version.arquillian_core}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-initialcontext</artifactId>
-            <version>${version.arquillian_core}</version>
-        </dependency>
+
     </dependencies>
 
-    <repositories>
-        <repository>
-        <id>jboss-public-repository-group</id>
-        <name>JBoss Public Repository Group</name>
-        <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-        <layout>default</layout>
-        <releases>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-        </snapshots>
-        </repository>
-        <repository>
-        <id>oss-public-repository-group</id>
-        <name>OSS Sonatype Public Repository Group</name>
-        <url>https://oss.sonatype.org/content/repositories/staging</url>
-        <layout>default</layout>
-        <releases>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-        </repository>
-        <!-- TODO: Temporarily enable snapshot repository -->
-        <!-- This can be removed once an official releases available -->
-        <repository>
-            <id>jakarta-snapshots</id>
-            <url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
-        </repository>
-    </repositories>    
- 
     <build>
         <testResources>
             <testResource>
@@ -343,7 +279,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
                 <configuration>
                     <suiteXmlFiles>
                         <suiteXmlFile>${tck.suite.file}</suiteXmlFile>
@@ -366,7 +301,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.22.1</version>
                 <executions>
                     <execution>
                         <id>generate-test-report</id>
@@ -383,56 +317,8 @@
             </plugin>
         </plugins>
     </build>
- 
+
     <profiles>
-         <profile>
-            <id>glassish-remote</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-glassfish-managed-jakarta</artifactId>
-                    <version>1.0.0.Final-SNAPSHOT</version>
-                    <exclusions>
-                        <exclusion>
-                            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                        </exclusion>
-                        <exclusion>
-                            <artifactId>arquillian-testenricher-ejb-jakarta</artifactId>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                        </exclusion>
-                        <exclusion>
-                            <artifactId>arquillian-testenricher-resource-jakarta</artifactId>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                        </exclusion>
-                        <exclusion>
-                            <artifactId>arquillian-testenricher-initialcontext</artifactId>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <!-- Run the tests -->
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.19.1</version>
-                        <configuration>
-                            <argLine>-Xmx1024m</argLine>
-                            <forkMode>once</forkMode>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${tck.suite.file}</suiteXmlFile>
-                            </suiteXmlFiles>
-                            <systemPropertyVariables>
-                                <validation.provider>${validation.provider}</validation.provider>
-                                <arquillian.launch>incontainer</arquillian.launch>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>glassfish-managed</id>
             <activation>
@@ -441,34 +327,16 @@
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-glassfish-managed-jakarta</artifactId>
-                    <version>1.0.0.Final-SNAPSHOT</version>
-                    <exclusions>
-                        <exclusion>
-                            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                        </exclusion>
-                        <exclusion>
-                            <artifactId>arquillian-testenricher-ejb-jakarta</artifactId>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                        </exclusion>
-                        <exclusion>
-                            <artifactId>arquillian-testenricher-resource-jakarta</artifactId>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                        </exclusion>
-                        <exclusion>
-                            <artifactId>arquillian-testenricher-initialcontext</artifactId>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                        </exclusion>
-                    </exclusions>
+                    <artifactId>arquillian-parent-glassfish</artifactId>
+                    <version>1.0.2</version>
+                    <type>pom</type>
                 </dependency>
             </dependencies>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.22.1</version>
+                        <version>2.19.1</version>
                         <configuration>
                             <argLine>-Xmx1024m</argLine>
                             <forkMode>once</forkMode>

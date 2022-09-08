@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!--
 
-    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
-	Copyright (c) 2019, 2020 Payara Foundation and/or its affiliates. All rights reserved.
+    Copyright (c) 2018, 2020 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2019, 2022 Payara Foundation and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,21 +24,22 @@
 	<property file="${basedir}/build.properties" />
 
 	<property name="maven.executable" value="${env.MAVEN_HOME}/bin/mvn" />
-	<property name="pathsep" value="${path.separator}"/>
-	<property name="portingkit.version" value="3.0.2"/>
+        <property name="pathsep" value="${path.separator}"/>
+        <property name="portingkit.version" value="3.0.2"/>
 	<property name="src" value="${basedir}/src" />
 	<property name="classes" value="${basedir}/classes" />
 	<property name="dist" value="${basedir}/dist" />
 	<property name="lib" value="${basedir}/lib" />
-	<property name="dist.file" value="bv-tck-payara-porting"/>
-	<property name="admin.port" value="4848"/>
-	<property name="admin.host" value="localhost"/>
-	<!-- number of seconds to wait for the v4 admin port to be available -->
-	<property name="wait.for.v4" value="90"/>
+	<property name="dist.file" value="bv-tck-glassfish-porting" />
+        <property name="admin.port" value="4848"/>
+        <property name="admin.host" value="localhost"/>
+        <!-- number of seconds to wait for the v4 admin port to be available -->
+	<property name="wait.for.v4" value="90"/> 
 	<property name="sig.file" value="${porting.home}/validation-api.sig" />
+
         
         <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${lib}/ant-contrib.jar" />
-        
+
         <condition property="java.classes.for.sig.ext" value="bundle/Classes/classes.jar"
                                    else="lib/rt.jar">    
             <and> 
@@ -102,7 +103,7 @@
                 <java outputproperty="sigoutput" fork="true" jar="${lib}/sigtest.jar">
 			<arg value="Signaturetest"/>
                         <arg value="-Classpath"/>
-                        <arg value="${java.home}/${java.classes.for.sig.ext}${pathsep}${glassfish.home}/modules/jersey-bean-validator.jar${aix.jars}"/>
+                        <arg value="${java.home}/${java.classes.for.sig.ext}${pathsep}${glassfish.home}/modules/hibernate-validator.jar${aix.jars}"/>
                         <arg value="-Package"/>
                         <arg value="jakarta.validation"/>
                         <arg value="-FileName"/>
@@ -447,32 +448,33 @@
 	</target>
         
 	<presetdef name="mvn.test">
-                <exec executable="${maven.executable}">
-                    <arg value="--global-settings" />
-                    <arg value="${porting.home}/settings.xml"/>
-
-                    <arg value="-U" />
-                    <arg value="clean" />
-                    <arg value="test" />
-                </exec>
+		<exec executable="${maven.executable}">
+			<arg value="--global-settings" />
+			<arg value="${porting.home}/settings.xml"/>
+			<arg value="-U" />
+			<arg value="-Dincontainer" />
+			<arg value="-Dmaven.test.failure.ignore=true" />
+            <arg value="clean" />
+            <arg value="test" />
+		</exec>
 	</presetdef>
         
         <presetdef name="mvn.test.win">
                     <exec executable="cmd">
                         <arg value="/c"/>
                         <arg value="${maven.executable}.bat"/>
-                        <arg value="--global-settings" />
-                        <arg value="${porting.home}/settings.xml"/>
-                        <arg value="-U" />
-                        <arg value="test" />
-                    </exec>
+                        	<arg value="--global-settings" />
+							<arg value="${porting.home}/settings.xml"/>
+							<arg value="-U" />
+            				<arg value="test" />
+		</exec>
 	</presetdef>
         
         <!--<target name="-record.sigtest">
 		<java fork="true" jar="${lib}/sigtestdev.jar">
 			<arg value="Setup"/>
                         <arg value="-Classpath"/>
-                        <arg value="${java.home}/${java.classes.for.sig.ext}:${glassfish.home}/modules/jersey-bean-validator.jar"/>
+                        <arg value="${java.home}/${java.classes.for.sig.ext}:${glassfish.home}/modules/hibernate-validator.jar"/>
                         <arg value="-Package"/>
                         <arg value="jakarta.validation"/>
                         <arg value="-FileName"/>

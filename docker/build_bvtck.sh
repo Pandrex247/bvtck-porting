@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 #
-# Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2018, 2022 Oracle and/or its affiliates. All rights reserved.
 # Copyright (c) 2019, 2020 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
@@ -33,8 +33,8 @@ which mvn
 mvn -version
 
 
-sed -i "s#^porting\.home=.*#porting.home=$WORKSPACE#g" "$WORKSPACE/build.xml"
-sed -i "s#^glassfish\.home=.*#glassfish.home=$WORKSPACE/payara6/glassfish#g" "$WORKSPACE/build.xml"
+sed -i.bak "s#^porting\.home=.*#porting.home=$WORKSPACE#g" "$WORKSPACE/build.xml"
+sed -i.bak "s#^glassfish\.home=.*#glassfish.home=$WORKSPACE/payara6/glassfish#g" "$WORKSPACE/build.xml"
 
 ant -version
 ant dist.sani

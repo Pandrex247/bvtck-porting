@@ -25,7 +25,6 @@
     <defaultProtocol type="Servlet 5.0"/>
 
     <engine>
-        <property name="maxTestClassesBeforeRestart">@maxClassesRestart@</property>
         <property name="deploymentExportPath">target/artifacts</property>
     </engine>
 
@@ -39,7 +38,9 @@
             <property name="adminPassword">@adminPassword@</property>
             <property name="debug">false</property>
             <property name="validation.provider">${validation.provider}</property>
-            <!--<property name="allowConnectingToRunningServer">true</property>-->
+            <!--
+            <property name="allowConnectingToRunningServer">true</property>
+            -->
         </configuration>
     </container>
     

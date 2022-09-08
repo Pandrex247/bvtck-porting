@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -40,8 +40,8 @@ spec:
     tty: true
     imagePullPolicy: Always
     env:
-      - name: JAVA_TOOL_OPTIONS
-        value: -Xmx2G
+    - name: JAVA_TOOL_OPTIONS
+      value: -Xmx2G
     resources:
       limits:
         memory: "8Gi"
@@ -52,19 +52,19 @@ spec:
   parameters {
     string(name: 'GF_BUNDLE_URL', 
            defaultValue: 'https://download.eclipse.org/ee4j/glassfish/glassfish-7.0.0-SNAPSHOT-nightly.zip',
-             description: 'URL required for downloading GlassFish Full/Web profile bundle' )
-  	string(name: 'TCK_BUNDLE_BASE_URL',
-              defaultValue: '',
-              description: 'Base URL required for downloading prebuilt binary TCK Bundle from a hosted location' )
+           description: 'URL required for downloading GlassFish Full/Web profile bundle' )
+    string(name: 'TCK_BUNDLE_BASE_URL',
+           defaultValue: '',
+           description: 'Base URL required for downloading prebuilt binary TCK Bundle from a hosted location' )
     string(name: 'TCK_BUNDLE_FILE_NAME', 
            defaultValue: 'bv-tck-glassfish-porting-3.0.0.zip', 
-             description: 'Name of bundle file to be appended to the base url' )
+           description: 'Name of bundle file to be appended to the base url' )
     string(name: 'BV_TCK_BUNDLE_URL', 
-           defaultValue: 'https://download.eclipse.org/ee4j/bean-validation/3.0/beanvalidation-tck-dist-3.0.0.zip',
-  	         description: 'BV TCK bundle url' )
+           defaultValue: 'https://download.eclipse.org/ee4j/bean-validation/3.0/beanvalidation-tck-dist-3.0.1.zip', 
+  	   description: 'BV TCK bundle url' )
     string(name: 'BV_TCK_VERSION', 
-           defaultValue: '3.0.0',
-             description: 'version of bundle file' )
+           defaultValue: '3.0.1', 
+           description: 'version of bundle file' )
     choice(name: 'JDK', choices: 'JDK11\nJDK17',
            description: 'Java SE Version to be used for running TCK either JDK11 or JDK17' )
   }
